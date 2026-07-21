@@ -60,6 +60,7 @@ contextBridge.exposeInMainWorld('milodex', {
       ipcRenderer.invoke('mangadex:getChapters', mangaId, lang, limit, offset),
     getChapterImages: (chapterId: string) =>
       ipcRenderer.invoke('mangadex:getChapterImages', chapterId),
+    getImageDataUrl: (url: string) => ipcRenderer.invoke('mangadex:getImageDataUrl', url),
     getTrending: () => ipcRenderer.invoke('mangadex:getTrending'),
     downloadChapter: (chapterId: string, mangaTitle: string, chapterNumber: string) =>
       ipcRenderer.invoke('mangadex:downloadChapter', chapterId, mangaTitle, chapterNumber)

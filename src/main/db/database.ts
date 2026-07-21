@@ -175,6 +175,7 @@ function createTables(): void {
     ['hotkey_zoom_out', '-'],
     ['hotkey_library', 'l'],
     ['ui_language', 'pt-br'],
+    ['mangadex_language', 'pt-br'],
     ['reader_bg', '#000000']
   ]
   for (const [key, value] of defaults) {

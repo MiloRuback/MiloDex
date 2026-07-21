@@ -109,9 +109,10 @@ export default function Settings() {
           <select
             className="input"
             style={{ width: 'auto', fontSize: 13 }}
-            value={settings.ui_language || 'pt-BR'}
-            onChange={(e) => updateSetting('ui_language', e.target.value)}
+            value={settings.mangadex_language || 'pt-br'}
+            onChange={(e) => updateSetting('mangadex_language', e.target.value)}
           >
+            <option value="all">Todos os idiomas</option>
             <option value="pt-br">Português (BR)</option>
             <option value="en">English</option>
             <option value="es">Español</option>

@@ -26,6 +26,24 @@ import { parseTXT, parseHTML } from '../parsers/text'
 import { parseDOCX } from '../parsers/docx'
 
 const MANGADEX_API = 'https://api.mangadex.org'
+const MANGADEX_FEED_LIMIT = 500
+
+function shouldFilterLanguage(lang?: string): boolean {
+  return Boolean(lang && lang !== 'all')
+}
+
+function buildMangaDexPageUrls(baseUrl: string, hash: string, filenames: string[], quality: 'data' | 'data-saver'): string[] {
+  return filenames.map((filename) => `${baseUrl}/${quality}/${hash}/${filename}`)
+}
+
+function assertMangaDexImageUrl(imageUrl: string): void {
+  const parsed = new URL(imageUrl)
+  const isMangaDexHome = parsed.protocol === 'https:' && parsed.hostname.endsWith('.mangadex.network')
+  const isMangaDexUploads = parsed.protocol === 'https:' && parsed.hostname === 'uploads.mangadex.org'
+  if (!isMangaDexHome && !isMangaDexUploads) {
+    throw new Error('URL de imagem fora do MangaDex bloqueada por seguranca.')
+  }
+}
 
 export function registerAllHandlers(): void {
   // ─── Library ────────────────────────────────────────────────────────────────
@@ -174,6 +192,9 @@ export function registerAllHandlers(): void {
         if (filters.demographic && filters.demographic.length > 0) {
           params['publicationDemographic[]'] = filters.demographic
         }
+        if (shouldFilterLanguage(filters.language)) {
+          params['availableTranslatedLanguage[]'] = [filters.language]
+        }
         const response = await axios.get(`${MANGADEX_API}/manga`, { params, timeout: 10000 })
         return response.data
       } catch (err: any) {
@@ -204,14 +225,22 @@ export function registerAllHandlers(): void {
       offset = 0
     ) => {
       try {
+        const pageLimit = Math.min(Math.max(limit || 100, 1), MANGADEX_FEED_LIMIT)
+        const params: Record<string, any> = {
+          limit: pageLimit,
+          offset,
+          'order[chapter]': 'asc',
+          'order[publishAt]': 'asc',
+          'includes[]': ['scanlation_group', 'user'],
+          includeExternalUrl: 0,
+          includeEmptyPages: 0
+        }
+        if (shouldFilterLanguage(lang)) {
+          params['translatedLanguage[]'] = [lang]
+        }
+
         const response = await axios.get(`${MANGADEX_API}/manga/${mangaId}/feed`, {
-          params: {
-            'translatedLanguage[]': [lang, 'en'],
-            limit,
-            offset,
-            'order[chapter]': 'asc',
-            'includes[]': ['scanlation_group']
-          },
+          params,
           timeout: 10000
         })
         return response.data
@@ -227,15 +256,33 @@ export function registerAllHandlers(): void {
         timeout: 10000
       })
       const { baseUrl, chapter } = response.data
-      const pages = chapter.data.map(
-        (filename: string) => `${baseUrl}/data/${chapter.hash}/${filename}`
-      )
-      const dataSaver = chapter.dataSaver.map(
-        (filename: string) => `${baseUrl}/data-saver/${chapter.hash}/${filename}`
-      )
+      const data = Array.isArray(chapter?.data) ? chapter.data : []
+      const saver = Array.isArray(chapter?.dataSaver) ? chapter.dataSaver : []
+      if (!baseUrl || !chapter?.hash || (data.length === 0 && saver.length === 0)) {
+        throw new Error('Este capitulo nao possui paginas hospedadas no MangaDex.')
+      }
+      const pages = buildMangaDexPageUrls(baseUrl, chapter.hash, data, 'data')
+      const dataSaver = buildMangaDexPageUrls(baseUrl, chapter.hash, saver, 'data-saver')
       return { pages, dataSaver }
     } catch (err: any) {
       throw new Error(err.message || 'Erro ao buscar imagens do capítulo')
+    }
+  })
+
+  ipcMain.handle('mangadex:getImageDataUrl', async (_e, imageUrl: string) => {
+    try {
+      assertMangaDexImageUrl(imageUrl)
+      const imageRes = await axios.get(imageUrl, {
+        responseType: 'arraybuffer',
+        timeout: 30000,
+        headers: {
+          Referer: 'https://mangadex.org/'
+        }
+      })
+      const contentType = imageRes.headers['content-type'] || 'image/jpeg'
+      return `data:${contentType};base64,${Buffer.from(imageRes.data).toString('base64')}`
+    } catch (err: any) {
+      throw new Error(err.message || 'Erro ao recuperar imagem do MangaDex')
     }
   })
 

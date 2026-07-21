@@ -1,4 +1,28 @@
-import type { MangaDexManga } from '../types/global'
+import type { MangaDexChapter, MangaDexManga } from '../types/global'
+
+export const MANGADEX_LANGUAGES = [
+  { value: 'pt-br', label: 'Português (BR)' },
+  { value: 'en', label: 'English' },
+  { value: 'es-la', label: 'Español (LATAM)' },
+  { value: 'es', label: 'Español' },
+  { value: 'fr', label: 'Français' },
+  { value: 'ja', label: '日本語' },
+  { value: 'ko', label: '한국어' },
+  { value: 'zh', label: '中文' },
+  { value: 'zh-hk', label: '中文 (HK)' },
+  { value: 'de', label: 'Deutsch' },
+  { value: 'it', label: 'Italiano' },
+  { value: 'ru', label: 'Русский' },
+  { value: 'tr', label: 'Türkçe' },
+  { value: 'id', label: 'Bahasa Indonesia' },
+  { value: 'pl', label: 'Polski' },
+  { value: 'ar', label: 'العربية' }
+]
+
+export const MANGADEX_LANGUAGE_FILTERS = [
+  ...MANGADEX_LANGUAGES,
+  { value: 'all', label: 'Todos os idiomas' }
+]
 
 // Extract cover URL from MangaDex manga object
 export function getMangaCover(manga: MangaDexManga, size: '256' | '512' | 'original' = '512'): string {
@@ -29,6 +53,40 @@ export function getMangaTitle(manga: MangaDexManga, lang = 'pt-br'): string {
 export function getMangaDescription(manga: MangaDexManga, lang = 'pt-br'): string {
   const descs = manga.attributes.description
   return descs[lang] || descs['pt'] || descs['en'] || Object.values(descs)[0] || ''
+}
+
+export function formatMangaDexLanguage(lang?: string): string {
+  if (!lang) return 'Idioma desconhecido'
+  return MANGADEX_LANGUAGE_FILTERS.find((l) => l.value === lang)?.label || lang.toUpperCase()
+}
+
+export function getChapterGroupName(chapter: MangaDexChapter): string {
+  const group = chapter.relationships?.find((r) => r.type === 'scanlation_group')
+  return group?.attributes?.name || 'Sem grupo'
+}
+
+export function isReadableChapter(chapter: MangaDexChapter): boolean {
+  return !chapter.attributes.externalUrl && (chapter.attributes.pages || 0) > 0
+}
+
+export function sortMangaDexChapters<T extends MangaDexChapter>(chapters: T[]): T[] {
+  return [...chapters].sort((a, b) => {
+    const chapterA = Number.parseFloat(a.attributes.chapter || '0')
+    const chapterB = Number.parseFloat(b.attributes.chapter || '0')
+    if (Number.isFinite(chapterA) && Number.isFinite(chapterB) && chapterA !== chapterB) {
+      return chapterA - chapterB
+    }
+    return new Date(a.attributes.publishAt || 0).getTime() - new Date(b.attributes.publishAt || 0).getTime()
+  })
+}
+
+export function formatChapterOption(chapter: MangaDexChapter): string {
+  const number = chapter.attributes.chapter ? `Cap. ${chapter.attributes.chapter}` : 'Oneshot'
+  const title = chapter.attributes.title ? ` - ${chapter.attributes.title}` : ''
+  const lang = chapter.attributes.translatedLanguage.toUpperCase()
+  const group = getChapterGroupName(chapter)
+  const pages = `${chapter.attributes.pages || 0}p`
+  return `${number}${title} | ${lang} | ${group} | ${pages}`
 }
 
 // Format file size

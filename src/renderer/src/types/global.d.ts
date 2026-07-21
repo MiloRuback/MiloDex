@@ -86,6 +86,7 @@ export interface MangaDexChapter {
     pages: number
     translatedLanguage: string
     publishAt: string
+    externalUrl?: string
     uploader?: string
   }
   relationships: Array<{ id: string; type: string; attributes?: { name?: string } }>
@@ -133,6 +134,7 @@ export interface MiloDexAPI {
     getManga: (id: string) => Promise<MangaDexManga>
     getChapters: (mangaId: string, lang?: string, limit?: number, offset?: number) => Promise<any>
     getChapterImages: (chapterId: string) => Promise<{ pages: string[]; dataSaver: string[] }>
+    getImageDataUrl: (url: string) => Promise<string>
     getTrending: () => Promise<any>
     downloadChapter: (chapterId: string, mangaTitle: string, chapterNumber: string) => Promise<{ success: boolean; path?: string; error?: string }>
   }

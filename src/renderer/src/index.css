@@ -563,6 +563,19 @@ body {
 
 .btn-danger:hover { background: hsl(0 83% 25%); }
 
+.btn:disabled,
+.reader-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn:disabled:hover,
+.reader-btn:disabled:hover {
+  background: hsl(var(--secondary));
+}
+
 /* ─── Filter Chips ────────────────────────────────────────────────── */
 .filter-chip {
   padding: 5px 14px;

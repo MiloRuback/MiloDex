@@ -55,7 +55,7 @@ function createWindow(): void {
   }
 }
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   electronApp.setAppUserModelId('com.milodev.miodex')
 
   app.on('browser-window-created', (_, window) => {
@@ -63,7 +63,7 @@ app.whenReady().then(() => {
   })
 
   // Initialize database
-  initDatabase()
+  await initDatabase()
 
   // Register all IPC handlers
   registerAllHandlers()
