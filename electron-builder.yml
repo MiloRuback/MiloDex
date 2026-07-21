@@ -1,0 +1,43 @@
+appId: com.milodev.miodex
+productName: MiloDex
+copyright: Copyright © 2024 MiloDev
+directories:
+  buildResources: resources
+  output: dist
+files:
+  - out/**/*
+  - node_modules/better-sqlite3/**/*
+  - '!node_modules/better-sqlite3/build/Release/*.pdb'
+extraResources:
+  - from: resources/
+    to: resources/
+    filter:
+      - '**/*'
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  icon: resources/icon.ico
+  artifactName: '${productName}-Setup-${version}.${ext}'
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: MiloDex
+mac:
+  target:
+    - target: dmg
+      arch:
+        - x64
+        - arm64
+  icon: resources/icon.icns
+  artifactName: '${productName}-${version}-${arch}.${ext}'
+linux:
+  target:
+    - AppImage
+    - deb
+  icon: resources/icon.png
+  category: Graphics
+  artifactName: '${productName}-${version}.${ext}'

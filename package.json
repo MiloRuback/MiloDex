@@ -1,0 +1,63 @@
+{
+  "name": "miodex",
+  "version": "1.0.0",
+  "description": "MiloDex - Premium Manga, Comics & Books Reader",
+  "main": "./out/main/index.js",
+  "author": "MiloDev",
+  "license": "MIT",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
+    "build:win": "npm run build && electron-builder --win",
+    "build:mac": "npm run build && electron-builder --mac",
+    "build:linux": "npm run build && electron-builder --linux",
+    "lint": "eslint . --ext .ts,.tsx"
+  },
+  "dependencies": {
+    "@electron-toolkit/utils": "^4.0.0",
+    "@radix-ui/react-dialog": "^1.1.1",
+    "@radix-ui/react-dropdown-menu": "^2.1.1",
+    "@radix-ui/react-progress": "^1.1.0",
+    "@radix-ui/react-scroll-area": "^1.1.0",
+    "@radix-ui/react-select": "^2.1.1",
+    "@radix-ui/react-slider": "^1.2.0",
+    "@radix-ui/react-tabs": "^1.1.0",
+    "@radix-ui/react-toast": "^1.2.1",
+    "@radix-ui/react-tooltip": "^1.1.2",
+    "axios": "^1.7.7",
+    "clsx": "^2.1.1",
+    "framer-motion": "^11.3.24",
+    "jszip": "^3.10.1",
+    "lucide-react": "^0.441.0",
+    "mammoth": "^1.8.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.1",
+    "sql.js": "^1.12.0",
+    "tailwind-merge": "^2.5.2",
+    "zustand": "^4.5.5"
+  },
+  "devDependencies": {
+    "@electron-toolkit/eslint-config-ts": "^2.0.0",
+    "@electron-toolkit/tsconfig": "^1.0.1",
+    "@types/node": "^20.16.5",
+    "@types/react": "^18.3.5",
+    "@types/react-dom": "^18.3.0",
+    "@types/sql.js": "^1.4.9",
+    "@vitejs/plugin-react": "^4.3.1",
+    "autoprefixer": "^10.4.20",
+    "electron": "^31.4.0",
+    "electron-builder": "^25.0.5",
+    "electron-vite": "^2.3.0",
+    "eslint": "^9.9.1",
+    "postcss": "^8.4.45",
+    "tailwindcss": "^3.4.10",
+    "typescript": "^5.5.4",
+    "vite": "^5.4.6"
+  },
+  "allowScripts": {
+    "electron@31.7.7": true,
+    "esbuild@0.21.5": true
+  }
+}
