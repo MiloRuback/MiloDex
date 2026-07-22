@@ -129,6 +129,15 @@ git push origin main --tags
 
 O workflow gera os assets de Windows, Android, Linux e macOS e publica tudo na pagina de Releases.
 
+Se quiser publicar manualmente os assets Windows/Android ja gerados nesta maquina:
+
+```powershell
+$env:GITHUB_TOKEN = 'seu_token_com_contents_write'
+npm run build:win
+npm run mobile:apk
+powershell -ExecutionPolicy Bypass -File scripts/publish-github-release.ps1
+```
+
 ## Estrutura
 
 ```text
