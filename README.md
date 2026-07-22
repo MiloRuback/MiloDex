@@ -25,12 +25,6 @@
   <a href="https://github.com/MiloRuback/MiloDex/releases/latest/download/MiloDex-Android-1.0.0-debug.apk">
     <img alt="Download Android" src="https://img.shields.io/badge/Android-APK-3DDC84?style=for-the-badge&logo=android&logoColor=white" />
   </a>
-  <a href="https://github.com/MiloRuback/MiloDex/releases/latest/download/MiloDex-1.0.0.AppImage">
-    <img alt="Download Linux AppImage" src="https://img.shields.io/badge/Linux-AppImage-FCC624?style=for-the-badge&logo=linux&logoColor=111111" />
-  </a>
-  <a href="https://github.com/MiloRuback/MiloDex/releases/latest/download/MiloDex-1.0.0-arm64.dmg">
-    <img alt="Download macOS" src="https://img.shields.io/badge/macOS-Download-000000?style=for-the-badge&logo=apple&logoColor=white" />
-  </a>
 </p>
 
 ## Sobre
@@ -47,8 +41,6 @@ Os botoes acima apontam para os arquivos da ultima release publicada no GitHub.
 | --- | --- | --- |
 | Windows | `MiloDex-Setup-1.0.0.exe` | Instalador NSIS x64 |
 | Android | `MiloDex-Android-1.0.0-debug.apk` | APK instalavel por sideload |
-| Linux | `MiloDex-1.0.0.AppImage` / `MiloDex-1.0.0.deb` | AppImage e pacote Debian |
-| macOS | `MiloDex-1.0.0-x64.dmg` / `MiloDex-1.0.0-arm64.dmg` | Builds Intel e Apple Silicon |
 
 > O APK atual e assinado com chave debug. Em celulares Samsung/Android, pode ser necessario permitir instalacao de apps de fonte externa.
 
@@ -104,11 +96,6 @@ npm run build:win
 # Android APK
 npm run mobile:apk
 
-# Linux
-npm run build:linux
-
-# macOS
-npm run build:mac
 ```
 
 O APK local e copiado para:
@@ -127,7 +114,7 @@ git tag v1.0.0
 git push origin main --tags
 ```
 
-O workflow gera os assets de Windows, Android, Linux e macOS e publica tudo na pagina de Releases.
+O workflow gera os assets de Windows e Android e publica tudo na pagina de Releases.
 
 Se quiser publicar manualmente os assets Windows/Android ja gerados nesta maquina:
 
