@@ -8,6 +8,8 @@ $sdkRoot = if ($env:ANDROID_HOME) {
 } else {
   Join-Path $env:LOCALAPPDATA 'Android\Sdk'
 }
+$packageJson = Get-Content -Raw -LiteralPath (Join-Path $root 'package.json') | ConvertFrom-Json
+$version = $packageJson.version
 
 $jdkCandidates = @()
 if ($env:JAVA_HOME) {
@@ -91,9 +93,12 @@ try {
   $sourceApk = Join-Path $root 'android\app\build\outputs\apk\debug\app-debug.apk'
   $targetDir = Join-Path $root 'dist\android'
   $targetApk = Join-Path $targetDir 'MiloDex-debug.apk'
+  $releaseNamedApk = Join-Path $targetDir "MiloDex-Android-$version-debug.apk"
   New-Item -ItemType Directory -Force -Path $targetDir | Out-Null
   Copy-Item -LiteralPath $sourceApk -Destination $targetApk -Force
+  Copy-Item -LiteralPath $sourceApk -Destination $releaseNamedApk -Force
   Write-Host "APK written to $targetApk"
+  Write-Host "Release asset copy written to $releaseNamedApk"
 } finally {
   Pop-Location
 }

@@ -1,10 +1,29 @@
 {
   "name": "miodex",
   "version": "1.0.0",
-  "description": "MiloDex - Premium Manga, Comics & Books Reader",
+  "description": "MiloDex - MangaDex reader for desktop and Android",
   "main": "./out/main/index.js",
   "author": "MiloDev",
   "license": "MIT",
+  "homepage": "https://github.com/MiloRuback/MiloDex#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MiloRuback/MiloDex.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MiloRuback/MiloDex/issues"
+  },
+  "keywords": [
+    "manga",
+    "mangadex",
+    "reader",
+    "electron",
+    "capacitor",
+    "android",
+    "react",
+    "typescript",
+    "cbz"
+  ],
   "scripts": {
     "dev": "electron-vite dev",
     "build": "electron-vite build",

@@ -6,6 +6,7 @@ export default [
     ignores: [
       'android/**',
       'dist/**',
+      'electron.vite.config.*.mjs',
       'out/**',
       'node_modules/**',
       'resources/**'
