@@ -66,10 +66,16 @@ jobs:
         uses: android-actions/setup-android@v3
 
       - name: Install Android packages
-        shell: bash
+        shell: pwsh
         run: |
-          yes | sdkmanager --licenses
-          sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
+          $sdkManager = Get-ChildItem "$env:ANDROID_HOME\cmdline-tools" -Recurse -Filter sdkmanager.bat |
+            Select-Object -First 1 -ExpandProperty FullName
+          if (-not $sdkManager) {
+            throw 'sdkmanager.bat not found in ANDROID_HOME'
+          }
+          $yes = ((1..40 | ForEach-Object { 'y' }) -join "`n") + "`n"
+          $yes | & $sdkManager --sdk_root=$env:ANDROID_HOME --licenses
+          & $sdkManager --sdk_root=$env:ANDROID_HOME "platform-tools" "platforms;android-36" "build-tools;36.0.0"
 
       - name: Install dependencies
         run: npm ci
