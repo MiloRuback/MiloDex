@@ -71,7 +71,7 @@ export default function Sidebar() {
       </div>
 
       {/* Quick Import Button */}
-      <div style={{ padding: '12px 8px 4px' }}>
+      <div className="sidebar-quick-import" style={{ padding: '12px 8px 4px' }}>
         <button
           className="btn btn-primary"
           style={{ width: '100%', justifyContent: collapsed ? 'center' : 'flex-start', padding: collapsed ? '9px' : '9px 14px', gap: 6 }}
@@ -128,7 +128,7 @@ export default function Sidebar() {
       </nav>
 
       {/* Collapse Toggle */}
-      <div style={{ padding: '8px' }}>
+      <div className="sidebar-collapse" style={{ padding: '8px' }}>
         <button
           onClick={() => setCollapsed(!collapsed)}
           className="sidebar-item"

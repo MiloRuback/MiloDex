@@ -93,6 +93,7 @@ export interface MangaDexChapter {
 }
 
 export interface MiloDexAPI {
+  platform?: 'desktop' | 'mobile'
   window: {
     minimize: () => void
     maximize: () => void

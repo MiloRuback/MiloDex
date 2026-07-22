@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
-import { FolderOpen, File, Plus, Trash2 } from 'lucide-react'
+import { Plus, Trash2 } from 'lucide-react'
 import { useAppStore } from '../store/appStore'
-import { formatFileSize } from '../utils/helpers'
 
 export default function LocalFiles() {
   const navigate = useNavigate()
   const { library, fetchLibrary, showToast } = useAppStore()
   const [dragging, setDragging] = useState(false)
+  const isMobile = window.milodex.platform === 'mobile'
 
   const localFiles = library.filter((m) => m.source === 'local')
+  const supportedFormats = isMobile ? 'CBZ, TXT, HTML' : 'CBZ, CBR, EPUB, PDF, TXT, HTML, DOCX, DOC'
 
   const handleImport = async () => {
     const paths = await window.milodex.files.openPicker()
@@ -98,9 +99,11 @@ export default function LocalFiles() {
         }}
       >
         <div style={{ fontSize: 36, marginBottom: 8 }}>📂</div>
-        <p style={{ fontWeight: 600, marginBottom: 4 }}>Arraste arquivos aqui ou clique para selecionar</p>
+        <p style={{ fontWeight: 600, marginBottom: 4 }}>
+          {isMobile ? 'Toque para selecionar um arquivo' : 'Arraste arquivos aqui ou clique para selecionar'}
+        </p>
         <p style={{ fontSize: 12.5, color: 'hsl(var(--muted-foreground))' }}>
-          Suporta: CBZ, CBR, EPUB, PDF, TXT, HTML, DOCX, DOC
+          Suporta: {supportedFormats}
         </p>
       </div>
 
@@ -109,7 +112,9 @@ export default function LocalFiles() {
         <div className="empty-state">
           <div className="empty-state-icon">📁</div>
           <p className="empty-state-title">Nenhum arquivo local</p>
-          <p className="empty-state-desc">Importe seus arquivos CBZ, PDF, EPUB e outros formatos para começar.</p>
+          <p className="empty-state-desc">
+            Importe arquivos {isMobile ? 'CBZ, TXT ou HTML' : 'CBZ, PDF, EPUB e outros formatos'} para começar.
+          </p>
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>

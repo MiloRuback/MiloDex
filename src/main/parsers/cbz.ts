@@ -10,7 +10,7 @@ export async function parseCBZ(filePath: string): Promise<string[]> {
 
   const imageFiles: string[] = []
 
-  zip.forEach((relativePath, _file) => {
+  zip.forEach((relativePath) => {
     const ext = path.extname(relativePath).toLowerCase()
     if (IMAGE_EXTENSIONS.includes(ext)) {
       imageFiles.push(relativePath)

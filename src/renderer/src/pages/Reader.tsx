@@ -73,6 +73,8 @@ export default function Reader() {
   const uiTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const panStartRef = useRef({ x: 0, y: 0, panX: 0, panY: 0 })
   const didPanRef = useRef(false)
+  const didPinchRef = useRef(false)
+  const pinchStartRef = useRef({ active: false, distance: 0, zoom: 1 })
   const dataSaverPagesRef = useRef<string[]>([])
   const imageRetryingRef = useRef<Set<number>>(new Set())
 
@@ -355,6 +357,46 @@ export default function Reader() {
     [nextPage, prevPage, readMode, zoom, zoomAt]
   )
 
+  const getTouchDistance = (touches: React.TouchList): number => {
+    const dx = touches[0].clientX - touches[1].clientX
+    const dy = touches[0].clientY - touches[1].clientY
+    return Math.hypot(dx, dy)
+  }
+
+  const getTouchCenter = (touches: React.TouchList) => ({
+    x: (touches[0].clientX + touches[1].clientX) / 2,
+    y: (touches[0].clientY + touches[1].clientY) / 2
+  })
+
+  const handleTouchStart = (event: React.TouchEvent) => {
+    if (event.touches.length !== 2) return
+    setIsPanning(false)
+    pinchStartRef.current = {
+      active: true,
+      distance: getTouchDistance(event.touches),
+      zoom
+    }
+  }
+
+  const handleTouchMove = (event: React.TouchEvent) => {
+    if (!pinchStartRef.current.active || event.touches.length !== 2) return
+    event.preventDefault()
+    didPinchRef.current = true
+    const distance = getTouchDistance(event.touches)
+    const center = getTouchCenter(event.touches)
+    const ratio = distance / Math.max(pinchStartRef.current.distance, 1)
+    zoomAt(pinchStartRef.current.zoom * ratio, center.x, center.y)
+  }
+
+  const handleTouchEnd = () => {
+    if (pinchStartRef.current.active) {
+      pinchStartRef.current.active = false
+      window.setTimeout(() => {
+        didPinchRef.current = false
+      }, 250)
+    }
+  }
+
   const handlePointerDown = (event: React.PointerEvent) => {
     if (event.button !== 0 || zoom <= 1 || annotMode !== 'none' || readMode === 'scroll') return
     setIsPanning(true)
@@ -378,16 +420,26 @@ export default function Reader() {
   const handlePageClick = useCallback(
     (event: React.MouseEvent) => {
       if (annotMode !== 'none') return
-      if (didPanRef.current) {
+      if (didPanRef.current || didPinchRef.current) {
         didPanRef.current = false
         return
       }
       const rect = (event.currentTarget as HTMLElement).getBoundingClientRect()
       const clickX = event.clientX - rect.left
-      if (clickX < rect.width / 2) prevPage()
-      else nextPage()
+      const ratio = clickX / rect.width
+
+      if (!uiVisible) {
+        resetUiTimer()
+      } else if (ratio > 0.35 && ratio < 0.65) {
+        if (uiTimerRef.current) clearTimeout(uiTimerRef.current)
+        setUiVisible(false)
+      } else if (ratio < 0.35) {
+        prevPage()
+      } else {
+        nextPage()
+      }
     },
-    [annotMode, nextPage, prevPage]
+    [annotMode, nextPage, prevPage, resetUiTimer, uiVisible]
   )
 
   const handleImageError = useCallback(
@@ -503,7 +555,10 @@ export default function Reader() {
 
     if (readMode === 'scroll') {
       return (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, width: '100%', padding: '56px 0 88px' }}>
+        <div
+          style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, width: '100%', padding: '56px 0 88px' }}
+          onClick={handlePageClick}
+        >
           {pages.map((_, index) => (
             <div key={index} style={{ width: `${zoom * 100}%`, maxWidth: 'none', display: 'flex', justifyContent: 'center' }}>
               {renderImage(index, { width: '100%', height: 'auto', display: 'block' })}
@@ -649,12 +704,16 @@ export default function Reader() {
 
       <div
         ref={viewerRef}
-        style={{ flex: 1, position: 'relative', overflow: readMode === 'scroll' ? 'auto' : 'hidden' }}
+        style={{ flex: 1, position: 'relative', overflow: readMode === 'scroll' ? 'auto' : 'hidden', touchAction: readMode === 'scroll' ? 'pan-y pinch-zoom' : 'none' }}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerUp}
         onPointerLeave={handlePointerUp}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        onTouchCancel={handleTouchEnd}
       >
         {renderPages()}
 

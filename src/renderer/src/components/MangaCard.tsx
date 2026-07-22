@@ -13,7 +13,7 @@ interface MangaCardProps {
   onClick?: () => void
 }
 
-export default function MangaCard({ manga, history, size = 'md', showStatus = true, onClick }: MangaCardProps) {
+export default function MangaCard({ manga, history, showStatus = true, onClick }: MangaCardProps) {
   const navigate = useNavigate()
 
   const progress = history

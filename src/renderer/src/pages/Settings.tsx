@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import { Settings2, Keyboard, Palette, Moon, Monitor, Globe, Save } from 'lucide-react'
+import { Settings2, Keyboard, Monitor } from 'lucide-react'
 import { useAppStore } from '../store/appStore'
 
 const HOTKEYS = [
@@ -10,12 +9,6 @@ const HOTKEYS = [
   { key: 'hotkey_zoom_in', label: 'Aumentar zoom', default: '+' },
   { key: 'hotkey_zoom_out', label: 'Diminuir zoom', default: '-' },
   { key: 'hotkey_library', label: 'Abrir biblioteca', default: 'l' }
-]
-
-const THEMES = [
-  { value: 'dark', label: 'Escuro', icon: '🌙' },
-  { value: 'dark-amoled', label: 'AMOLED', icon: '⬛' },
-  { value: 'purple', label: 'Purple Night', icon: '🟣' }
 ]
 
 export default function Settings() {
@@ -30,11 +23,6 @@ export default function Settings() {
     })
     setHotkeys(hk)
   }, [settings])
-
-  const handleSaveHotkey = async (key: string) => {
-    await updateSetting(key, hotkeys[key])
-    showToast({ message: 'Atalho salvo!', type: 'success' })
-  }
 
   const handleRecordKey = (key: string) => {
     setRecordingKey(key)

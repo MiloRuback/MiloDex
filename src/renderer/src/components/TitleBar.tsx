@@ -1,5 +1,4 @@
 import React from 'react'
-import { Minus, Square, X, Maximize2 } from 'lucide-react'
 
 export default function TitleBar() {
   return (

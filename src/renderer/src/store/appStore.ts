@@ -35,7 +35,7 @@ export interface Toast {
   duration?: number
 }
 
-export const useAppStore = create<AppState>((set, get) => ({
+export const useAppStore = create<AppState>((set) => ({
   library: [],
   libraryLoaded: false,
   fetchLibrary: async () => {

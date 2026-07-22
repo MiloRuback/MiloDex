@@ -3,8 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { TrendingUp, BookOpen, ChevronRight } from 'lucide-react'
 import { useAppStore } from '../store/appStore'
-import MangaCard from '../components/MangaCard'
-import type { MangaDexManga, HistoryEntry } from '../types/global'
+import type { MangaDexManga } from '../types/global'
 import { getMangaCover, getMangaTitle } from '../utils/helpers'
 
 export default function Home() {

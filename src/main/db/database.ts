@@ -4,14 +4,12 @@ import { app } from 'electron'
 
 let db: any = null
 let dbPath = ''
-let SqlDatabase: any = null
 
 export async function initDatabase(): Promise<void> {
   try {
     // sql.js uses WebAssembly - no native compilation needed
     const initSqlJs = require('sql.js')
     const SQL = await initSqlJs()
-    SqlDatabase = SQL
 
     const userDataPath = app.getPath('userData')
     dbPath = path.join(userDataPath, 'miodex.db')
